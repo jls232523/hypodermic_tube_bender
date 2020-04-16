@@ -29,30 +29,14 @@ void setup() {
   feederStepper.setMaxSpeed(1000);
   zAxisStepper.setMaxSpeed(1000);
   benderStepper.setMaxSpeed(1000);
-  // Homing
-  //while (digitalRead(limitSwitch) != 0) {
-      //Serial.print("yo");
-
-    //benderStepper.setSpeed(1200);
-    //benderStepper.runSpeed();
-    //benderStepper.setCurrentPosition(0); // When limit switch pressed set position to 0 steps
- // }
   delay(1000);
-  // Move 1400 steps from the limit switch to starting position
- // while (benderStepper.currentPosition() != -1400) {
-   // benderStepper.setSpeed(-1200); // if negative rotates anti-clockwise
-    //benderStepper.run();
- // }
-  //benderStepper.setCurrentPosition(0);
 }
 
 void loop() {
   String mode = "tube";
-  if (mode.startsWith("tube")) {
- 
+  if (mode.startsWith("tube")) { 
     tube();
   }
- 
 }
 void tube(){
  int feed = 7.718; //mm
@@ -70,50 +54,33 @@ void tube(){
 
     int angleConst = 18; // angle constant
 
-servo01.write(5); // Set the bender pin up
-    delay(500);
-
-
-    
+   servo01.write(5); // Set the bender pin up
+    delay(500); 
     // Bend the wire 45 degrees
     benderStepper.setCurrentPosition(0);
-    while (benderStepper.currentPosition() !=75* angleConst) {// 1st bend left
+    while (benderStepper.currentPosition() != ~ * angleConst) {// 1st bend left positive
       benderStepper.setSpeed(1200);
-      Serial.println("65\n");
       benderStepper.run();
     }
     benderStepper.setCurrentPosition(0);
     delay(100);
-    
-// Bend the wire 45 degrees
+
     benderStepper.setCurrentPosition(0);
-    while (benderStepper.currentPosition() !=-5* angleConst) {// 1st bend left
+    while (benderStepper.currentPosition() !=-5* angleConst) {// Move away from tube
       benderStepper.setSpeed(-1200);
-      Serial.println("65\n");
       benderStepper.run();
     }
     benderStepper.setCurrentPosition(0);
     delay(100);
-
-
-    
     servo01.write(130);                                       // down
         delay(500);
-
-
-
-
-    feed = 21.8186;
+    feed = ~ ; // feed side 1
     Serial.println("Feed side1");
     feedDistance =  feed *48;
     while (feederStepper.currentPosition() != feedDistance) { //feed
       feederStepper.setSpeed(1000);
       feederStepper.run();
-    }
- 
- 
-        
-// Bend the wire 45 degrees
+    }   
     benderStepper.setCurrentPosition(0);
     while (benderStepper.currentPosition() !=10* angleConst) {// move to the other side of tube
       benderStepper.setSpeed(1200);
@@ -122,59 +89,24 @@ servo01.write(5); // Set the bender pin up
     }
     benderStepper.setCurrentPosition(0);
     delay(100);
-
-        
-     
-
-  
  servo01.write(5);                                           // Up
-  delay(500);
-
-
-
-                                                                                                    // second bend
+  delay(500);                                                                                              // second bend
     // Bend the wire 45 degrees
     benderStepper.setCurrentPosition(0);
-    while (benderStepper.currentPosition() !=-135* angleConst) {// 2nd bend 
+    while (benderStepper.currentPosition() != ~ * angleConst) {// 2nd bend negative
       benderStepper.setSpeed(-1200);
-      Serial.println("65\n");
       benderStepper.run();
     }
     benderStepper.setCurrentPosition(0);
     delay(100);
-
-
-
-
- 
     servo01.write(130);                                         // down
         delay(500);
-
-
-
-feed = 29.8704;
-    Serial.println("Feed topside");
+feed = ~ ; //feed top length
     feedDistance =  feed *48;
     while (feederStepper.currentPosition() != feedDistance) {   // Feed
       feederStepper.setSpeed(1000);
       feederStepper.run();
-    }
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-                                                                                                   // reset
+    }                                                                                      // reset
  // Bend the wire 45 degrees
     benderStepper.setCurrentPosition(0);
     while (benderStepper.currentPosition() !=85* angleConst) {// reset bender
@@ -184,59 +116,36 @@ feed = 29.8704;
     }
     benderStepper.setCurrentPosition(0);
     delay(1000);////////////////////////////////////////////////////////////////////////////////////
-
-
-
 servo01.write(5);                                             // Set the bender pin up
   delay(500);
 
-
-
-
 // Bend the wire 45 degrees
     benderStepper.setCurrentPosition(0);
-    while (benderStepper.currentPosition() !=-50* angleConst) {// 3rd bend left
+    while (benderStepper.currentPosition() != ~ * angleConst) {// 3rd bend left negative
       benderStepper.setSpeed(-1200);
-      Serial.println("65\n");
       benderStepper.run();
     }
     benderStepper.setCurrentPosition(0);
     delay(100);
-
-
-
-
  // down
     servo01.write(130);
         delay(500);
 
 feedStepper.setCurrentPosition(0);
-//feed = 7.1882; //mm
-//    feedDistance = feed * 48;
-// while (feederStepper.currentPosition() != feedDistance) { // run until it reaches the distance value
-//      feederStepper.setSpeed(1200);
-//      feederStepper.run();
-//    }
-feedStepper.setCurrentPosition(0);
-
 
 servo01.write(5); // Set the bender pin up
   delay(500);
 
     // Bend the wire 45 degrees
     benderStepper.setCurrentPosition(0);
-    while (benderStepper.currentPosition() !=95* angleConst) {// 4th bend left
+    while (benderStepper.currentPosition() != ~ * angleConst) {// 4th bend left positive
       benderStepper.setSpeed(1200);
-      Serial.println("65\n");
       benderStepper.run();
     }
     benderStepper.setCurrentPosition(0);
     delay(100);
-
-    
     while(1){
       Serial.println("done");
     }
  
 }
-python-build-end
