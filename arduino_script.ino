@@ -39,7 +39,7 @@ void loop() {
   }
 }
 void tube(){
- int feed = 7.718; //mm
+ int feed = ~ ; //mm
  int feedDistance = feed * 48;
 
   feederStepper.setCurrentPosition(0); //reset
