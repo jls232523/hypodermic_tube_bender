@@ -81,11 +81,11 @@ class Window:
             os.mkdir(path)
             script = open(path+"/arduino_script.ino", 'w+')
             r = requests.get('https://raw.githubusercontent.com/jls232523/hypodermic_tube_bender/master/arduino_script.ino')
-            print(r.text,file=script)
+            script.write(r.text)
         except OSError as error:  
             script = open(path+"/arduino_script.ino", 'w+') 
             r = requests.get('https://raw.githubusercontent.com/jls232523/hypodermic_tube_bender/master/arduino_script.ino')
-            print(r.text,file=script)
+            script.write(r.text)
         script.close()
         script = open(path+"/arduino_script.ino", 'r')
         script.seek(0,0)
