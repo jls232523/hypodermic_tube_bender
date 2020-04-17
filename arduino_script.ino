@@ -131,7 +131,7 @@ servo01.write(5);                                             // Set the bender 
     servo01.write(130);
         delay(500);
 
-feedStepper.setCurrentPosition(0);
+feederStepper.setCurrentPosition(0);
 
 servo01.write(5); // Set the bender pin up
   delay(500);
