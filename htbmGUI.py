@@ -2,6 +2,8 @@ from tkinter import *
 import tkinter as tk
 from tkinter import messagebox
 import math
+import os
+import requests
 
 
 class Window:
@@ -13,25 +15,23 @@ class Window:
         self.innerRadius = .125
         self.outerRadius = .150
         self.master = master;
+        self.valueList = [0,0,0,0,0,0,0]
         #size of user interface
         root.geometry("1000x1000")
         root.title("Automated Hypodermic Tube Bender")
         #creating the buttons, the command atribute calls the function
-        self.start_button = Button(master, text="Start System", height=2, width=12, bd=3, command=self.start)
-        self.stop_button = Button(master, text="Stop System", height=2, width=12, bd=3, command=self.stop)
-
+        self.start()
         #displaying the buttons in the GUI, change relx and rely to move buttons around
-        self.start_button.place(relx=0.5, rely=0.3, anchor=CENTER)
-        self.stop_button.place(relx=0.5, rely=0.9, anchor=CENTER)
+        #self.start_button.place(relx=0.5, rely=0.3, anchor=CENTER)
+        #self.stop_button.place(relx=0.5, rely=0.9, anchor=CENTER)
 
     #this function will handle the starting process of the device
     def start(self):
-        root.title("Which component would you like to test?")
+        root.title("Automated Hypodermic Tube Bender")
         self.Restore()
         self.displayCurrentShape()
         self.displayConfig()
         self.displayCurrentShape()
-
 
     def displayConfig(self):
         tk.Label(self.w, text="Leg Length:").place(relx=0.1, rely=0.8, anchor=CENTER)
@@ -49,6 +49,13 @@ class Window:
         self.iR.set(str(self.innerRadius))
         self.oR = StringVar()
         self.oR.set(str(self.outerRadius))
+        self.valueList[0] = str(float(self.leg1) * 25.4)
+        self.valueList[1] = str(self.angleLeft)
+        self.valueList[2] = str(float(self.side1) * 25.4)
+        self.valueList[3] = str(-(180 - float(self.angleLeft)))
+        self.valueList[5] = str(-float(self.angleLeft))
+        self.valueList[6] = str((180 - float(self.angleLeft)))
+
 
         e1 = tk.Entry(self.w, textvariable=self.l1, justify=RIGHT, width=7) 
         e2 = tk.Entry(self.w, textvariable=self.s1, justify=RIGHT, width=7)
@@ -61,8 +68,35 @@ class Window:
         e3.place(relx=0.79, rely=0.8, anchor=CENTER)
         e4.place(relx=0.34, rely=0.85, anchor=CENTER)
         e5.place(relx=0.64, rely=0.85, anchor=CENTER)
-        self.redraw_button = Button(self.w, text="Draw Tube", height=2, width=12, bd=3, command=self.redraw)
-        self.redraw_button.place(relx=0.47, rely=0.9, anchor=CENTER)
+        self.redraw_button = Button(self.w, text="Generate Script", height=2, width=12, bd=3, command=self.generate)
+        self.redraw_button.place(relx=0.67, rely=0.9, anchor=CENTER)
+        self.redraw_button2 = Button(self.w, text="Draw Tube", height=2, width=12, bd=3, command=self.redraw)
+        self.redraw_button2.place(relx=0.27, rely=0.9, anchor=CENTER)
+
+
+    def generate(self):
+        #print(self.serial_ports())
+        path = "arduino_script"
+        try:  
+            os.mkdir(path)
+            script = open(path+"/arduino_script.ino", 'w+')
+            r = requests.get('https://raw.githubusercontent.com/jls232523/hypodermic_tube_bender/master/arduino_script.ino')
+            print(r.text,file=script)
+        except OSError as error:  
+            script = open(path+"/arduino_script.ino", 'w+') 
+            r = requests.get('https://raw.githubusercontent.com/jls232523/hypodermic_tube_bender/master/arduino_script.ino')
+            print(r.text,file=script)
+        script.close()
+        script = open(path+"/arduino_script.ino", 'r')
+        script.seek(0,0)
+        filedata = script.read()
+        script.close()
+        newdata = filedata.replace('~',self.valueList[0],1)
+        for i in range(1,7):
+            newdata = newdata.replace('~',self.valueList[i],1)
+        script = open(path+"/arduino_script.ino", 'w')
+        script.write(newdata);
+        script.close()
 
     def redraw(self):
         self.leg1 = self.l1.get()
@@ -80,13 +114,10 @@ class Window:
         w = Canvas(self.master, width=1000, height=1000)
         self.w = w
         w.pack()
-        #1 inch =  100px
         inchRatio = 300
         center = 500
-        #leg1 = 0.283 * inchRatio
         leg1 = float(self.leg1) * inchRatio
         leg2 = float(self.leg1) * inchRatio
-        #base1 = 0.859 * inchRatio
         #define values
         middlePart = .1 * inchRatio
         radiusR = float(self.innerRadius)
@@ -150,7 +181,10 @@ class Window:
 
         #Top
         w.create_line(sx3+(topRadL*inchRatio),syR3 ,sxR3-(inchRatio*topRadR), syR3, fill="darkgreen")
-
+        p1 = [sx3+(topRadL*inchRatio), syR3]
+        p2 = [sxR3-(inchRatio*topRadR), syR3]
+        distance = math.sqrt( ((p1[0]-p2[0])**2)+((p1[1]-p2[1])**2) ) / inchRatio
+        self.valueList[4] = str(distance * 25.4)
     def stop(self):
         root.title("Stop Operations")
 
